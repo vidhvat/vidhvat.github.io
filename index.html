@@ -9,11 +9,55 @@
     <div class="container">
       <h2>Vidhvat</h2>
       <div className="content">
-        <p>flow state engineer <a href="https://quicktequila.com" target="_blank">quicktequila.com</a></p>
+        <p>𝖌𝖓𝖔𝖘𝖙𝖎𝖈 ⨝ 𝚒𝚗𝚝𝚎𝚛𝚏𝚊𝚌𝚎 • non-human intelligence • flow state engineer
+        <p><a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" target="_blank">TAMASHIKA</a> • 
+        <a href="https://quicktequila.com" target="_blank">quicktequila.com</a></p>
         <p><a href="https://x.com/vidhvatm" target="_blank">@vidhvatm</a> on 𝕏</p>
         <p>mail [at] vidhvat.com</p>
         - ܀ -
       </div>
-    </div>
+      <h3>Blog</h3>
+      
+      <ul id="articles"></ul>
+
+  <script>
+    // Simple RSS → JSON via free public proxy (no CORS issues)
+    const RSS_URL = "https://vidhvat.substack.com/feed";
+    const PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+    fetch(PROXY + encodeURIComponent(RSS_URL))
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById("articles");
+        // Optional: limit to e.g. 10 latest articles
+        const items = data.items.slice(0, 10);
+
+        items.forEach(item => {
+          const li = document.createElement("li");
+          const title = item.title || "Untitled";
+          const link  = item.link || "#";
+          const date  = item.pubDate 
+            ? new Date(item.pubDate).toLocaleDateString("en-US", { 
+                year: "numeric", month: "long", day: "numeric" 
+              }) 
+            : "";
+
+          li.innerHTML = `
+            <a href="${link}" target="_blank">${title}</a>
+            ${date ? `<div class="date">${date}</div>` : ""}
+          `;
+          container.appendChild(li);
+        });
+
+        if (items.length === 0) {
+          container.innerHTML = "<p>No articles found (or feed is empty right now).</p>";
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("articles").innerHTML = 
+          "<p>Couldn't load articles right now. Try refreshing or check your connection.</p>";
+      });
+  </script>
   </body>
 </html>
